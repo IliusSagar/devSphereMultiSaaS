@@ -3,40 +3,14 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 👑 CREATE ROLES FIRST
-        Role::firstOrCreate(['name' => 'admin']);
-        Role::firstOrCreate(['name' => 'user']);
-
-        // 👑 ADMIN USER
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@gmail.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('123456'),
-            ]
-        );
-
-        $admin->assignRole('admin');
-
-        // 👤 NORMAL USER
-        $user = User::firstOrCreate(
-            ['email' => 'user@gmail.com'],
-            [
-                'name' => 'User',
-                'password' => Hash::make('123456'),
-            ]
-        );
-
-        $user->assignRole('user');
-
-       
+        $this->call([
+            RoleSeeder::class,
+            AdminUserSeeder::class,
+        ]);
     }
 }

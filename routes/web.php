@@ -17,12 +17,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    // 👤 USER DASHBOARD
-    Route::get('/dashboard', function () {
+    Route::get('/user', function () {
         return view('user.dashboard');
-    })->name('dashboard')->middleware('role:user');
+    })->name('user.dashboard')->middleware('role:user');
 
-    // 👑 ADMIN DASHBOARD (FIXED)
     Route::get('/admin', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard')->middleware('role:admin');

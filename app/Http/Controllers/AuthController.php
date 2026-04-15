@@ -38,7 +38,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('user.dashboard');
     }
 
     public function login(Request $request)
@@ -56,19 +56,19 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route('dashboard');
+            return redirect()->route('user.dashboard');
         }
 
         return back()->with('error', 'Invalid credentials');
     }
 
     public function logout(Request $request)
-    {
-        Auth::logout();
+{
+    Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        return redirect()->route('login');
-    }
+    return redirect()->route('login');
+}
 }
