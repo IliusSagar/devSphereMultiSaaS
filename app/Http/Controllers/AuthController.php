@@ -33,23 +33,42 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // default role
+        $user->assignRole('user');
+
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect()->route('dashboard');
     }
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         if (Auth::attempt($request->only('email','password'))) {
-            return redirect('/dashboard');
+
+            $request->session()->regenerate();
+
+            if (auth()->user()->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('dashboard');
         }
 
-        return back()->with('error','Invalid credentials');
+        return back()->with('error', 'Invalid credentials');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/login');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }
